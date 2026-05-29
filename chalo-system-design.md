@@ -19,6 +19,7 @@
 - [Part 10 — Observability, SLOs, Chaos](#part-10--observability-slos-chaos)
 - [Part 11 — Tradeoffs, What I'd Build First, Interview Traps](#part-11--tradeoffs-what-id-build-first-interview-traps)
 - [Appendix A — Glossary & Numbers Table](#appendix-a--glossary--numbers-table)
+- [Appendix B — The original feature suggestion (the email that started this)](#appendix-b--the-original-feature-suggestion-the-email-that-started-this)
 
 ---
 
