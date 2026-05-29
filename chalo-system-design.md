@@ -13,7 +13,7 @@
 - [Part 4 — Data Plane: Streams, Stores, Indices](#part-4--data-plane-streams-stores-indices)
 - [Part 5 — Core Service Designs (LLD)](#part-5--core-service-designs-lld)
 - [Part 6 — API Contracts & Data Models](#part-6--api-contracts--data-models)
-- [Part 7 — DEEP DIVE: Proximity Notification Feature](#part-7--deep-dive-proximity-notification-feature)
+- [Part 7 — DEEP DIVE: Proximity Notification Feature](#part-7--deep-dive-proximity-notification-feature)x
 - [Part 8 — Scaling, Hot Partitions, Cost](#part-8--scaling-hot-partitions-cost)
 - [Part 9 — Deployment, K8s, CI/CD](#part-9--deployment-k8s-cicd)
 - [Part 10 — Observability, SLOs, Chaos](#part-10--observability-slos-chaos)
@@ -879,3 +879,57 @@ Pass on for q2: crowd filter, device geofence fallback, multi-region, iOS APNs (
 ---
 
 *End of document. ~1700 lines, 60-minute interview-walkthrough-ready. Part 7 is the actual deliverable I'd hand Chalo's product team alongside my December 2025 email.*
+
+---
+
+## Appendix B — The original feature suggestion (the email that started this)
+
+This document exists because of a small piece of feedback I sent Chalo as a daily user. Including the exchange verbatim for context — it grounds every design decision in Part 7 in a real user need, not a hypothetical one.
+
+### B.1 What I wrote — 15 December 2025, 10:10 AM
+
+> **From:** Deepaksakthi V K <deepak2004sakthi@gmail.com>
+> **To:** Chalo Support <support@chalo.com>
+> **Subject:** Feature suggestion — push notification before bus arrival
+>
+> I'm a regular user of the Chalo app in Chennai for tracking MTC buses during my daily commutes. The live GPS tracking and ETA features work great for manual checks, but there's no push notification alert when a bus I'm waiting for approaches my stop.
+>
+> Adding this feature would save users time and reduce unnecessary waiting at stops — e.g., notify 5–10 minutes before arrival based on live ETA. It could include options for specific routes or favorites, with customizable alerts for crowd levels too. This would make the app even more user friendly for busy commuters.
+>
+> I'm using Chalo app version 10.8.26 on Android. Happy to provide more details or test a beta.
+>
+> Thank you for improving public transport in India!
+>
+> Best regards,
+> Deepaksakthi Vellore Kumar
+
+### B.2 What Chalo replied — 16 December 2025, 3:40 PM
+
+> **From:** Chalo Premium Bus <support@chalo.com> via freshdesk.com
+> **To:** Deepaksakthi V K
+> **Subject:** Re: Feature suggestion — push notification before bus arrival
+>
+> Hi Deepaksakthi V K,
+>
+> Thank you for sharing your valuable feedback and suggestions regarding the Chalo app. We truly appreciate your inputs on adding a push notification alert feature that would notify users when a bus is approaching their stop.
+>
+> Currently, the Chalo app provides live GPS tracking and ETA updates for buses, which can be checked manually. However, we understand that a notification system — such as alerts 5–10 minutes before arrival, with options for favorite routes and crowd-level customization — would make the app even more convenient and user-friendly for daily commuters.
+>
+> We have noted your suggestion and will forward it to our product development team for consideration in future updates. Your willingness to provide more details and even test a beta version is greatly appreciated, and it helps us improve the app experience for all users.
+>
+> Thank you once again for your support in improving public transport in India.
+>
+> Best Regards,
+> Team Chalo
+
+### B.3 Why I wrote up the full system design
+
+Three reasons:
+
+1. **To remove the "is this 2 weeks or 6 months?" uncertainty** that usually stalls features at the product-prioritisation step. Part 7 of this document is a v1 scoped to **4 engineer-weeks**, with explicit "what we defer to v2" boundaries.
+2. **To document the design choices that distinguish a real implementation from a naive one.** Fence the bus not the user. Trigger on ETA not distance. React to the stream not the schedule. Each one comes from a specific failure mode I've seen in the wild.
+3. **As a working artefact for a senior-SDE / staff-SDE-level system-design interview.** The proximity-notification problem has the right ingredients: streaming ingestion, stateful real-time compute, fan-out at scale, mobile-platform constraints, idempotency, multi-region. It's an honest test of distributed-systems judgement.
+
+If anyone on Chalo's engineering team — or any other transit platform — wants to discuss the implementation or the design choices, my contact info is in the repo README.
+
+*Five months after the email, the feature is still not in the Chalo Android app. Public transit in India is a high-leverage software problem. I'd love to see this shipped.*
